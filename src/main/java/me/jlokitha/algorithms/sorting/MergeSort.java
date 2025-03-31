@@ -1,5 +1,7 @@
 package me.jlokitha.algorithms.sorting;
 
+import java.util.Arrays;
+
 /**
  * -----------------------------------------------------------------------------
  * Author    : Janindu Lokitha
@@ -10,60 +12,77 @@ package me.jlokitha.algorithms.sorting;
  * Description: Merge sort is a sorting algorithm that uses the divide and conquer strategy to sort an array. Big O Notation: O(n log n)
  */
 public class MergeSort {
-    public static void mergeSort(int[] nums, int low, int high) {
-        if (low < high) {
-            int mid = (low + high) / 2;
+    // Merges two subarrays of arr[].
+    // First subarray is arr[l..m] and second subarray is arr[m+1..r]
+    public static void merge(int[] arr, int l, int m, int r) {
+        // Calculate sizes of two subarrays to be merged
+        int n1 = m - l + 1;
+        int n2 = r - m;
 
-            mergeSort(nums, low, mid);
-            mergeSort(nums, mid + 1, high);
+        // Create temporary arrays
+        int[] L = new int[n1];
+        int[] R = new int[n2];
 
-            merge(nums, low, mid, high);
-        }
-    }
+        // Copy data to temporary arrays L[] and R[]
+        for (int i = 0; i < n1; ++i)
+            L[i] = arr[l + i];
+        for (int j = 0; j < n2; ++j)
+            R[j] = arr[m + 1 + j];
 
-    public static void merge(int[] nums, int low, int mid, int high) {
-        int n1 = mid - low + 1;
-        int n2 = high - mid;
+        // Merge the temporary arrays
 
-        int[] left = new int[n1];
-        int[] right = new int[n2];
-
-        for (int i = 0; i < n1; i++) left[i] = nums[low + i];
-        for (int i = 0; i < n2; i++) right[i] = nums[mid + 1 + i];
-
-        int i = 0, j = 0, k = low;
-
+        // Initial indexes of first and second subarrays
+        int i = 0, j = 0;
+        // Initial index of merged subarray array
+        int k = l;
         while (i < n1 && j < n2) {
-            if (left[i] <= right[j]) {
-                nums[k] = left[i];
+            if (L[i] <= R[j]) {
+                arr[k] = L[i];
                 i++;
             } else {
-                nums[k] = right[j];
+                arr[k] = R[j];
                 j++;
             }
             k++;
         }
 
+        // Copy remaining elements of L[], if any
         while (i < n1) {
-            nums[k] = left[i];
+            arr[k] = L[i];
             i++;
             k++;
         }
 
+        // Copy remaining elements of R[], if any
         while (j < n2) {
-            nums[k] = right[j];
+            arr[k] = R[j];
             j++;
             k++;
         }
     }
 
-    public static void main(String[] args) {
-        int[] nums = {5, 14, 3, 21, 1};
+    // Main function that sorts arr[l..r] using merge()
+    public static void mergeSort(int[] arr, int l, int r) {
+        if (l < r) {
+            // Find the middle point
+            int m = (l + r) / 2;
 
-        mergeSort(nums, 0, nums.length - 1);
+            // Sort first and second halves
+            mergeSort(arr, l, m);
+            mergeSort(arr, m + 1, r);
 
-        for (int num : nums) {
-            System.out.print(num + " ");
+            // Merge the sorted halves
+            merge(arr, l, m, r);
         }
+    }
+
+    // Driver method to test the mergeSort function
+    public static void main(String[] args) {
+        int[] array = {12, 11, 13, 5, 6, 7};
+        System.out.println("Given Array: " + Arrays.toString(array));
+
+        mergeSort(array, 0, array.length - 1);
+
+        System.out.println("Sorted Array: " + Arrays.toString(array));
     }
 }
